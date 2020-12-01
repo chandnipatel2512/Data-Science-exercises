@@ -1,0 +1,28 @@
+# Import the relevant libraries
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Override the default matplotlib styles with those of Seaborn
+sns.set()
+
+# Load the data from an external csv file and have a look through
+raw_data = pd.read_csv('real_estate_price_size_year_view.csv')
+print(raw_data)
+print(raw_data.describe())
+
+#Create a copy of the data, then assign a dummy variable for 'view(one of the independent variables)
+data = raw_data.copy()
+data['view'] = data['view'].map({'Sea view': 1, 'No sea view': 0})
+
+# Declare the dependent and independent variables
+y = data ['price']
+x1 = data [['size', 'year','view']]
+
+# Create the regression
+# Add a constant. Essentially, we are adding a new column (equal in length to x), which consists only of 1s
+x = sm.add_constant(x1)
+# Fit the model, according to the OLS (ordinary least squares) method with a dependent variable y and an idependent x
+results = sm.OLS(y,x).fit()
+results.summary()
