@@ -1,0 +1,52 @@
+# Im[prt the relevant libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.linear_model import LinearRegression
+
+# Load the external csv file and have a look through the data
+data = pd.read_csv('real_estate_price_size_year.csv')
+print(data.head())
+print(data.describe())
+
+# Declare the dependent and independent variables
+x = data[['size','year']]
+y = data['price']
+
+# Create the regression
+reg = LinearRegression()
+print(reg.fit(x,y))
+print(reg.intercept_)
+print(reg.coef_)
+
+# Calculate the R^2 and adjusted R^2
+print(reg.score(x,y))
+
+r2 = reg.score(x,y)
+# Number of observations is the shape along axis 0
+n = x.shape[0]
+# Number of features (predictors, p) is the shape along axis 1
+p = x.shape[1]
+
+adjusted_r2 = 1-(1-r2)*(n-1)/(n-p-1)
+adjusted_r2
+
+# Predict the price of an apartment that has a size of 750 sq.ft and was built in 2009
+print(reg.predict([[75, 2009]]))
+
+# Calculate the p-values of the variables
+# Import the feature selection module from sklearn
+from sklearn.feature_selection import f_regression
+# The f-regression finds the F-statistics for the simple regressions created with each of the independent variables (i.e. it creates a simple linear regression for each feature to derive the relevant statistics). It does not take into account the mutual effect of the two features.
+f_regression(x,y)
+# The above line of code produces 2 output arrays - first one containing the F-statistics for each of the regressions and the second one containing the p-values for each of the F-statistics. We only require the p-values so the following rows of code extract that array.
+p_values = f_regression(x,y)[1]
+print(p_values.round(3))
+
+# Create a summary table
+reg_summary = pd.DataFrame(data = x.columns.values, columns=['Features'])
+reg_summary ['Coefficients'] = reg.coef_
+reg_summary ['p-values'] = p_values.round(3)
+print(reg_summary)
