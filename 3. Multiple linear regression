@@ -1,0 +1,20 @@
+# Import the relevant libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+import seaborn
+seaborn.set()
+
+# Load and have a scan through the data - data is being loaded from an external csv file
+data = pd.read_csv('real_estate_price_size_year.csv')
+data.describe()
+
+# Declare the dependent and independent variables
+y = data ['price']
+x1 = data [['size','year']]
+
+#Create the regression
+x = sm.add_constant(x1)
+results = sm.OLS(y,x).fit()
+results.summary()
