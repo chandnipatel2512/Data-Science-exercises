@@ -1,0 +1,36 @@
+# Import the relevant libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.linear_model import LinearRegression
+
+# Load the data from a csv file and view
+data = pd.read_csv('1.02. Multiple linear regression.csv')
+print(data.head())
+print(data.describe())
+
+# Declare the dependent and independent variables
+x = data[['SAT','Rand 1,2,3']]
+y = data['GPA']
+
+# Create the regression
+reg = LinearRegression()
+reg.fit(x,y)
+print(reg.coef_)
+print(reg.intercept_)
+
+# Calculate the R-squared
+print(reg.score(x,y))
+
+# Calculate the adjusted R-squared - If we want to find the Adjusted R-squared, we can do so by knowing the r2, the number of observations, the number of features
+r2 = reg.score(x,y)
+# Number of observations is the shape along axis 0
+n = x.shape[0]
+# Number of features (predictors, p) is the shape along axis 1
+p = x.shape[1]
+
+# Adjusted R-squared using the formula
+adjusted_r2 = 1-(1-r2)*(n-1)/(n-p-1)
+print(adjusted_r2)
