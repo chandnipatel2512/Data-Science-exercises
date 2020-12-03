@@ -1,0 +1,31 @@
+# Import the relevant libraries
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the data from an external csv file and view
+raw_data = pd.read_csv('Example-bank-data.csv')
+print(raw_data)
+
+# Change the outcome variable for the subscription column ('y') into 0s and 1s, create a copy of the data before altering it
+data = raw_data.copy()
+data = data.drop(['Unnamed: 0'], axis = 1)
+data['y'] = data['y'].map({'yes':1, 'no':0})
+print(data)
+
+# Check the descriptive statistics
+data.describe()
+
+# Run the regression
+x = sm.add_constant(x1)
+reg_log = sm.Logit(y,x)
+results_log = reg_log.fit()
+results_log.summary()
+
+# Visualise is on a scatter plot
+plt.scatter(x1,y,color = 'C0')
+plt.xlabel('Marketing duration', fontsize = 20)
+plt.ylabel('Subscription', fontsize = 20)
+plt.show()
