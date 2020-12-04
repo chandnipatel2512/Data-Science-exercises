@@ -1,0 +1,38 @@
+# Import the relevant libraries, set the style to Seaborn and import the KMeans module
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.cluster import KMeans
+
+# Import data from external file, check the data and create a copy
+raw_data = pd.read_csv('Categorical.csv')
+print(raw_data)
+data = raw_data.copy()
+
+# Create a copy of the original data set and map the data
+print(raw_data.continent.unique())
+data_mapped = raw_data.copy()
+data_mapped['continent']=data_mapped['continent'].map({'North America':0,'Europe':1,'Asia':2,'Africa':3,'South America':4, 'Oceania':5,'Seven seas (open ocean)':6, 'Antarctica':7})
+print(data_mapped)
+
+# Select the features - make another copy of the data with all parameters with the exception of 'Longitude' and 'Latitude'  removed
+x = data.iloc[:,3:4]
+print(x)
+
+# Clustering - assume that we have 8 clusters and show updated data with cluster details
+kmeans = KMeans(8)
+kmeans.fit(x)
+
+identified_clusters = kmeans.fit_predict(x)
+identified_clusters
+data_with_clusters = data.copy()
+data_with_clusters['Cluster'] = identified_clusters
+data_with_clusters
+
+# Plot the data
+plt.scatter(data['Longitude'], data['Latitude'],c=data_with_clusters['Cluster'], cmap = 'rainbow')
+plt.xlim(-180,180)
+plt.ylim(-90, 90)
+plt.show()
