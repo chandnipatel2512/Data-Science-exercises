@@ -1,0 +1,63 @@
+# # Import the relevant libraries, set the style to Seaborn and import the KMeans module
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.cluster import KMeans
+
+# Import data from external file, check the data and create a copy
+raw_data = pd.read_csv('Countries-exercise.csv')
+print(raw_data)
+data = raw_data.copy()
+
+# Plot the longitude and latitude columns
+plt.scatter(data['Longitude'], data['Latitude'])
+plt.xlim(-180,180)
+plt.ylim(-90, 90)
+print(plt.show())
+
+# Select the features - make another copy of the data with all parameters with the exception of 'Longitude' and 'Latitude'  removed
+x = data.iloc[:,1:]
+print(x)
+
+# Clustering - assume that we only have 4 clusters and show updated data with cluster details
+kmeans = KMeans(4)
+kmeans.fit(x)
+
+identified_clusters = kmeans.fit_predict(x)
+identified_clusters
+data_with_clusters = data.copy()
+data_with_clusters['Cluster'] = identified_clusters
+data_with_clusters
+
+# Plot the data
+plt.scatter(data['Longitude'], data['Latitude'],c=data_with_clusters['Cluster'], cmap = 'rainbow')
+plt.xlim(-180,180)
+plt.ylim(-90, 90)
+plt.show()
+
+## Selecting the number of clusters - WCSS (Within-Cluster-Sum-Of-Squares)
+kmeans.inertia_
+
+wcss=[]
+# Create all possible cluster solutions with a loop
+for i in range(1,7):
+    # Cluster solution with i clusters
+    kmeans = KMeans(i)
+    # Fit the data
+    kmeans.fit(x)
+    # Find WCSS for the current iteration
+    wcss_iter = kmeans.inertia_
+    # Append the value to the WCSS list
+    wcss.append(wcss_iter)
+    print(wcss)
+
+# The elbow method
+number_clusters = range(1,7)
+plt.plot(number_clusters,wcss)
+plt.title('The Elbow Method')
+plt.xlabel('Number of clusters')
+plt.ylabel('Within-cluster Sum of Squares')
+
+
