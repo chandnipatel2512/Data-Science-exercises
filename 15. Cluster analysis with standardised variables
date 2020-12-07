@@ -1,0 +1,49 @@
+ # Import the relevant libraries, set the style to Seaborn and import the KMeans module
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.cluster import KMeans
+
+# Import data from external file and check the data
+data = pd.read_csv('iris-dataset.csv')
+data
+
+# Plot the data
+plt.scatter(data['sepal_length'],data['sepal_width'])
+plt.xlabel('Length of sepal')
+plt.ylabel('Width of sepal')
+plt.show()
+
+# Import a preprocessing module for standardisation and standardise the data
+from sklearn import preprocessing
+x_scaled = preprocessing.scale(data)
+x_scaled
+
+# Cluster the scaled data
+kmeans_scaled = KMeans(3)
+kmeans_scaled.fit(x_scaled)
+clusters_scaled = data.copy()
+clusters_scaled['cluster_pred']=kmeans_scaled.fit_predict(x_scaled)
+
+# Plot the scaled data
+plt.scatter(clusters_scaled['sepal_length'],clusters_scaled['sepal_width'],c=clusters_new['cluster_pred'],cmap='rainbow')
+plt.xlabel('Sepal length')
+plt.ylabel('Sepal width')
+
+# Work of the WCSS (Within-Cluster-Sum-Of-Squares) and check the result
+wcss =[]
+for i in range(1,10):
+    # Cluster solution with i clusters
+    kmeans = KMeans(i)
+    # Fit the STANDARDIZED data
+    kmeans.fit(x_scaled)
+    # Append the WCSS for the iteration
+    wcss.append(kmeans.inertia_)
+wcss
+
+# Plot the WCSS for different clusters
+plt.plot(range(1,10),wcss)
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
